@@ -11,7 +11,7 @@ After completion of the configuration continue on code editor with terraform.
 
 **Basic structure:**
 
-```json
+```
 terraform {
   required_providers {
     aws = {
@@ -29,7 +29,7 @@ provider "aws" {
 
 ### 1: Create a VPC (Virtual Private Cloud) with CIDR block 10.0.0.0/16
 
-```json
+```
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
   tags = {
@@ -54,7 +54,7 @@ The VPC with name main has been created!
 
 Write below code to create aws subnet in the vpc that we just created.
 
-```json
+```
 resource "aws_subnet" "public_subnet" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.1.0/24"
@@ -74,7 +74,7 @@ Check "Public Subnet" is created successfully.
 
 Write below code to create aws subnet in the vpc that we just created.
 
-```json
+```
 resource "aws_subnet" "Private_subnet" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.2.0/24"
@@ -92,7 +92,7 @@ Check "Private Subnet" is created successfully.
 
 ### 4: Create an Internet Gateway (IGW) and attach it to the VPC
 
-```json
+```
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
   tags = {
@@ -111,7 +111,7 @@ After adding code, run `terraform apply` and verify internet gateway in cosole.
 
 Create a route table for public subnet
 
-```json
+```
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -129,7 +129,7 @@ aws\_route\_table will create a table under vpc main. The route will sends all t
 
 Then associate route table with public subnet.
 
-```json
+```
 resource "aws_route_table_association" "public" {
   subnet_id      = aws_subnet.public_subnet.id
   route_table_id = aws_route_table.public.id
@@ -160,7 +160,7 @@ Route table is associated with public subnet using terraform.
 
 First, create a security group.
 
-```json
+```
 resource "aws_security_group" "ssh_access" {
   name_prefix = "SSH-and-HTTP-access"
   vpc_id      = aws_vpc.main.id
@@ -189,7 +189,7 @@ resource "aws_security_group" "ssh_access" {
 
 Second, EC2 instance.
 
-```json
+```
 resource "aws_instance" "web_server" {
   ami                    = "ami-0005e0cfe09cc9050" # Amazon Linux
   instance_type          = "t2.micro"
@@ -212,7 +212,7 @@ sudo systemctl restart httpd
 
 Then create an elastic ip and associat it with instance.
 
-```json
+```
 resource "aws_eip" "elastic_ip" {
   instance = aws_instance.web_server.id
   tags = {
@@ -223,7 +223,7 @@ resource "aws_eip" "elastic_ip" {
 
 For displaying IP address of your instance in your CLI, write below code:
 
-```json
+```
 output "getIP" {
   value = aws_instance.web_server.public_ip
 }
